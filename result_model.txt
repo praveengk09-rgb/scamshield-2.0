@@ -1,0 +1,182 @@
+PS D:\SEM 6\scamshield> & C:/Python313/python.exe "d:/SEM 6/scamshield/training/train_ml.py"
+============================================================
+STEP 1: Loading Dataset
+============================================================
+Shape        : (235795, 56)
+Phishing (0) : 100,945
+Legitimate(1): 134,850
+
+============================================================
+STEP 2: Dropping Metadata Columns
+============================================================
+Remaining columns: 51
+
+============================================================   
+STEP 3: Data Cleaning
+============================================================   
+Missing values: 0
+Duplicate rows: 808
+Clean shape: (234987, 51)
+
+============================================================   
+STEP 4: Feature Selection — Removing Leaky Features
+============================================================   
+Removed leaky features: []
+
+Running mutual information feature selection...
+
+Top 20 features by MI score:
+LineOfCode                    0.600667
+NoOfExternalRef               0.561260
+NoOfImage                     0.542299
+NoOfSelfRef                   0.526093
+NoOfJS                        0.499295
+LargestLineLength             0.487303
+NoOfCSS                       0.445373
+HasSocialNet                  0.417560
+LetterRatioInURL              0.382189
+HasCopyrightInfo              0.352610
+HasDescription                0.305840
+IsHTTPS                       0.259042
+NoOfOtherSpecialCharsInURL    0.240044
+HasSubmitButton               0.211067
+SpacialCharRatioInURL         0.205507
+IsResponsive                  0.189938
+DegitRatioInURL               0.169016
+NoOfEmptyRef                  0.168727
+NoOfDegitsInURL               0.168190
+URLLength                     0.166922
+
+Selected 20 features
+
+============================================================   
+STEP 5: Train/Test Split (80/20)
+============================================================   
+Train: 187,989 | Test: 46,998
+
+============================================================   
+STEP 6: Training Models
+============================================================   
+  Training Logistic Regression... Done! Acc=99.89%  F1=99.9%
+  Training Random Forest... Done! Acc=99.97%  F1=99.98%
+  Training SVM... Done! Acc=99.92%  F1=99.93%
+
+============================================================   
+STEP 7: Model Comparison
+============================================================   
+                     Accuracy  Precision  Recall  F1-Score  ROC-AUC
+Logistic Regression     99.89      99.88   99.93     99.90    100.0
+Random Forest           99.97      99.97   99.99     99.98    100.0
+SVM                     99.92      99.91   99.96     99.93    100.0
+
+✅ Best Model: Random Forest
+
+Classification Report — Random Forest:
+              precision    recall  f1-score   support
+
+    Phishing       1.00      1.00      1.00     20028
+  Legitimate       1.00      1.00      1.00     26970
+
+    accuracy                           1.00     46998
+   macro avg       1.00      1.00      1.00     46998
+weighted avg       1.00      1.00      1.00     46998
+
+
+============================================================   
+STEP 8: Learning Curve — Overfitting Check
+============================================================   
+
+  Train Size |   Train F1 |     Val F1 |      Gap
+--------------------------------------------------
+      18,798 |    100.00% |     99.89% |    0.11%
+      42,968 |    100.00% |     99.93% |    0.07%
+      67,138 |    100.00% |     99.96% |    0.04%
+      91,308 |    100.00% |     99.96% |    0.04%
+     115,478 |    100.00% |     99.97% |    0.03%
+     139,648 |    100.00% |     99.97% |    0.03%
+     163,818 |    100.00% |     99.97% |    0.03%
+     187,989 |    100.00% |     99.97% |    0.03%
+
+Saved → d:\SEM 6\scamshield\models\model_evaluation.png        
+Saved → d:\SEM 6\scamshield\models\feature_importance.png
+
+============================================================   
+STEP 9: Saving Best Model to models/
+============================================================   
+✅ phishing_model.pkl   → d:\SEM 6\scamshield\models\phishing_model.pkl
+✅ scaler.pkl           → d:\SEM 6\scamshield\models\scaler.pkl
+✅ selected_features.pkl→ d:\SEM 6\scamshield\models\selected_features.pkl
+PS D:\SEM 6\scamshield> & C:/Python313/python.exe "d:/SEM 6/scamshield/training/train_se.py"
+============================================================
+STEP 1: Loading SE NLP Dataset
+============================================================   
+Raw shape: (624, 2)
+Parsed: 621 samples
+
+Class distribution:
+label
+NOT-Malicious General Class    171
+Phishing                       114
+Scareware                      100
+Baiting                         80
+Malware                         78
+Pretexting                      78
+
+============================================================   
+STEP 2: Train/Test Split (80/20)
+============================================================   
+Train: 496 | Test: 125
+
+============================================================   
+STEP 3: TF-IDF Vectorization
+============================================================   
+Vocabulary size: 1000
+
+============================================================   
+STEP 4: Training Logistic Regression (Multi-class)
+============================================================   
+
+============================================================   
+STEP 5: Evaluation
+============================================================   
+
+Accuracy: 92.00%
+
+                             precision    recall  f1-score   support
+
+                    Baiting       0.92      0.75      0.83        16
+                    Malware       0.94      0.94      0.94        16
+NOT-Malicious General Class       0.89      1.00      0.94        34
+                   Phishing       0.83      0.87      0.85        23
+                 Pretexting       1.00      0.88      0.93        16
+                  Scareware       1.00      1.00      1.00        20
+
+                   accuracy                           0.92       125
+                  macro avg       0.93      0.91      0.92       125
+               weighted avg       0.92      0.92      0.92       125
+
+Top indicator words per class:
+  Baiting                       : free, download use, use, offer, offer free
+  Malware                       : view, file, download free, attached, attachment
+  NOT-Malicious General Class   : like, greetings, thank, really, best
+  Phishing                      : account, click, package, reset, students
+  Pretexting                    : need, customer, represent, information, support
+  Scareware                     : download attachment, infected, computer, download, security
+
+============================================================   
+STEP 6: Saving SE Models to models/
+============================================================   
+✅ se_model.pkl      → d:\SEM 6\scamshield\models\se_model.pkl
+✅ se_vectorizer.pkl → d:\SEM 6\scamshield\models\se_vectorizer.pkl
+✅ se_classes.pkl    → d:\SEM 6\scamshield\models\se_classes.pkl
+
+=============================================================  
+  SE TRAINING COMPLETE
+=============================================================  
+  Accuracy  : 92.00%
+  Classes   : ['Baiting', 'Malware', 'NOT-Malicious General Class', 'Phishing', 'Pretexting', 'Scareware']
+
+  Next step : python flask_api.py
+=============================================================  
+
+PS D:\SEM 6\scamshield> 

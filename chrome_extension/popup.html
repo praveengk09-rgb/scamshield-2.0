@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>ScamShield 2.0</title>
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    html,
+    body {
+      width: 260px;
+      min-width: 260px;
+      max-width: 260px;
+      overflow: hidden;
+      background: #1a1a2e;
+      margin: 0;
+      padding: 0;
+      border: none;
+      outline: none;
+      font-family:'Segoe UI',Arial,sans-serif; color:#eee;
+    }
+    .header {
+      background: linear-gradient(135deg, #16213e, #0f3460);
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-bottom: 1px solid #0f3460;
+    }.header h1 { font-size:16px; font-weight:700; color:#e94560; }
+    .status-card {
+      margin: 10px;
+      border-radius: 10px;
+      padding: 12px;
+      text-align: center;
+    }.status-card.phishing   { background:linear-gradient(135deg,#6b1a1a,#c0392b); border:1px solid #e74c3c; }
+    .status-card.checking   { background:linear-gradient(135deg,#2c2c4a,#3d3d6b); border:1px solid #555; }
+    .status-card.legitimate { background:linear-gradient(135deg,#1a4a2e,#27ae60); border:1px solid #2ecc71; }
+    .status-icon {
+      font-size: 28px;
+      margin-bottom: 6px;
+    }
+
+    .status-label {
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 2px;
+    }
+
+    .status-sub {
+      font-size: 11px;
+      opacity: 0.85;
+    }
+
+    .conf-wrap {
+      margin: 0 10px 10px;
+    }.conf-top  { display:flex; justify-content:space-between; font-size:12px; color:#aaa; margin-bottom:4px; }
+    .conf-bar  { height:8px; border-radius:4px; background:#333; overflow:hidden; }
+    .confidence-fill           { height:100%; border-radius:4px; transition:width 0.5s ease; }
+    .confidence-fill.phishing  { background:#e74c3c; }
+    .confidence-fill.legitimate{ background:#2ecc71; }
+    .features {
+      margin: 0 10px 10px;
+      background: #16213e;
+      border-radius: 8px;
+      padding: 10px;
+    }
+
+    .features-title {
+      font-size: 10px;
+      text-transform: uppercase;
+      color: #888;
+      margin-bottom: 6px;
+      letter-spacing: 0.5px;
+    }.feature-row { display:flex; justify-content:space-between; align-items:center; padding:5px 0; border-bottom:1px solid #222; font-size:13px; color:#ccc; }
+    .feature-row:last-child { border-bottom:none; }
+    .feature-val { font-weight:600; color:#e94560; }
+    .footer {
+      background: #0f0f1e;
+      padding: 6px 10px;
+      font-size: 9px;
+      color: #555;
+      text-align: center;
+      border-top: 1px solid #222;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <span style="font-size:20px">🔰</span>
+    <h1>ScamShield 2.0</h1>
+  </div>
+  <div class="status-card checking" id="statusCard">
+    <div class="status-icon"  id="statusIcon">🔍</div>
+    <div class="status-label" id="statusLabel">Analyzing...</div>
+    <div class="status-sub"   id="statusSub">Checking this website</div>
+  </div>
+  <div class="conf-wrap" id="confWrap" style="display:none">
+    <div class="conf-top"><span>Confidence</span><span id="confPct">0%</span></div>
+    <div class="conf-bar"><div class="confidence-fill" id="confFill" style="width:0%"></div></div>
+  </div>
+  <div class="features" id="featuresBox" style="display:none">
+    <div class="features-title">Detected Signals</div>
+    <div id="featuresList"></div>
+  </div>
+  <div class="actions" style="margin: 0 10px 10px; display:flex; gap:8px;">
+    <button id="openDashboardBtn"
+      style="flex:1; padding:6px; background:#e94560; color:white; border:none; border-radius:6px; cursor:pointer; font-weight:600; font-size:12px;">Open
+      Dashboard</button>
+  </div>
+  <div class="footer">ScamShield 2.0 • ML + NLP powered detection</div>
+  <script src="popup.js"></script>
+</body>
+</html>

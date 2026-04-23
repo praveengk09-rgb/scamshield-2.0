@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ScamShield 2.0 Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/dashboard.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+    <div class="glass-bg"></div>
+
+    <nav class="sidebar glass-panel">
+        <div class="logo">
+            <span class="logo-icon">🔰</span>
+            <h2>ScamShield 2.0</h2>
+        </div>
+        <ul class="nav-links">
+            <li class="active" data-target="overview"><span class="icon">📊</span> Overview</li>
+            <li data-target="history"><span class="icon">📜</span> Threat History</li>
+            <li data-target="analytics"><span class="icon">📈</span> Visual Analytics</li>
+            <li data-target="cookies"><span class="icon">🍪</span> Cookie Tracking</li>
+            <li data-target="postmortem" id="nav-postmortem"><span class="icon">🔍</span> Post-Mortem</li>
+            <li data-target="whitelist"><span class="icon">🛡️</span> Whitelist Manager</li>
+        </ul>
+        <div class="sidebar-footer">
+            <p>ScamShield 2.0 Local Engine</p>
+        </div>
+    </nav>
+
+    <main class="content">
+        <!-- Overview Section -->
+        <section id="overview" class="page-section active">
+            <header>
+                <h1>Dashboard Overview</h1>
+                <p>Welcome back! Here is a summary of your local phishing protection. Click a card to view specific websites.</p>
+            </header>
+
+            <div class="stats-grid">
+                <div class="stat-card glass-panel" style="cursor: pointer;" onclick="filterHistory('all')">
+                    <div class="stat-icon info">🌐</div>
+                    <div class="stat-content">
+                        <h3>Total Scanned</h3>
+                        <p id="total-scanned">0</p>
+                    </div>
+                </div>
+                <div class="stat-card glass-panel" style="cursor: pointer; border: 1px solid rgba(231,76,60,0.5);" onclick="filterHistory('phishing')">
+                    <div class="stat-icon danger">⚠️</div>
+                    <div class="stat-content">
+                        <h3>Phishing Detected</h3>
+                        <p id="total-phishing">0</p>
+                    </div>
+                </div>
+                <div class="stat-card glass-panel" style="cursor: pointer; border: 1px solid rgba(243,156,18,0.5);" onclick="filterHistory('suspicious')">
+                    <div class="stat-icon warning">🔶</div>
+                    <div class="stat-content">
+                        <h3>Suspicious Sites</h3>
+                        <p id="total-suspicious">0</p>
+                    </div>
+                </div>
+                <div class="stat-card glass-panel" style="cursor: pointer; border: 1px solid rgba(46,204,113,0.5);" onclick="filterHistory('safe')">
+                    <div class="stat-icon success">✅</div>
+                    <div class="stat-content">
+                        <h3>Safe Sites</h3>
+                        <p id="total-safe">0</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stats-grid split">
+                <div class="stat-card extended glass-panel">
+                    <h4>Cookies on Risky Sites</h4>
+                    <p id="cookies-risky" class="big-number">0</p>
+                </div>
+                <!-- Adding clickable Whitelist card -->
+                <div class="stat-card extended glass-panel" style="cursor: pointer;" onclick="filterHistory('whitelisted')">
+                    <h4>Whitelisted Sites</h4>
+                    <p id="total-whitelisted" class="big-number" style="color: var(--info);">0</p>
+                </div>
+                <div class="stat-card extended glass-panel">
+                    <h4>False Positives</h4>
+                    <p id="false-positives" class="big-number">0</p>
+                </div>
+                <div class="stat-card extended glass-panel">
+                    <h4>False Negatives</h4>
+                    <p id="false-negatives" class="big-number">0</p>
+                </div>
+            </div>
+
+            <div class="recent-scans glass-panel">
+                <h3>Recent Scans</h3>
+                <div class="table-responsive">
+                    <table id="recent-scans-table">
+                        <thead>
+                            <tr>
+                                <th>Timestamp</th>
+                                <th>URL</th>
+                                <th>Verdict</th>
+                                <th>Confidence</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Populated by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Threat History Section -->
+        <section id="history" class="page-section">
+            <header style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h1>Threat History & Logs</h1>
+                    <p>Complete log of locally evaluated websites.</p>
+                </div>
+                <div>
+                    <select id="history-filter-select" class="glass-panel" style="padding: 10px; color: var(--text-primary); background: rgba(0,0,0,0.5); border: 1px solid var(--panel-border); border-radius: 8px;" onchange="applyHistoryFilter()">
+                        <option value="all">View All</option>
+                        <option value="phishing">Phishing Detected</option>
+                        <option value="suspicious">Suspicious Sites</option>
+                        <option value="safe">Safe Sites</option>
+                        <option value="whitelisted">User Whitelisted</option>
+                    </select>
+                </div>
+            </header>
+            
+            <div class="history-container glass-panel">
+                <div class="table-responsive">
+                    <table id="history-table">
+                        <thead>
+                            <tr>
+                                <th>Timestamp</th>
+                                <th>Title</th>
+                                <th>URL</th>
+                                <th>Verdict</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Populated by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Analytics Section -->
+        <section id="analytics" class="page-section">
+            <header>
+                <h1>Visual Analytics</h1>
+            </header>
+            <div class="charts-grid">
+                <div class="chart-container glass-panel">
+                    <h3>Distribution</h3>
+                    <div class="canvas-wrapper"><canvas id="distributionChart"></canvas></div>
+                </div>
+                <div class="chart-container glass-panel">
+                    <h3>Daily Scan Trend</h3>
+                    <div class="canvas-wrapper"><canvas id="dailyTrendChart"></canvas></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Cookie Tracking Section -->
+        <section id="cookies" class="page-section">
+            <header>
+                <h1>Cookie Tracking</h1>
+            </header>
+            <div class="history-container glass-panel">
+                <div class="table-responsive">
+                    <table id="cookie-table">
+                        <thead>
+                            <tr><th>Timestamp</th><th>URL</th><th>Cookies Stored</th><th>Action</th></tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Post-Mortem & Feedback Section -->
+        <section id="postmortem" class="page-section">
+            <header>
+                <h1>Scan Post-Mortem & Classification</h1>
+                <p>Review the exact AI factors that led to a verdict and classify overrides.</p>
+            </header>
+
+            <div id="postmortem-list-view" class="glass-panel" style="padding: 24px;">
+                <h3>Select a Site to Analyze</h3>
+                <div class="table-responsive">
+                    <table id="postmortem-table">
+                        <thead>
+                            <tr><th>Timestamp</th><th>URL</th><th>Verdict</th><th>Action</th></tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="postmortem-content" class="glass-panel" style="display: none; padding: 24px;">
+                <button class="btn" style="margin-bottom: 24px;" onclick="closePostMortem()">← Back to List</button>
+                <div style="margin-bottom: 24px;">
+                    <h3>Analysis For:</h3>
+                    <p style="word-break: break-all; color: var(--accent); margin-top:8px;" id="pm-url"></p>
+                </div>
+                
+                <div class="stats-grid split" style="margin-bottom: 32px;">
+                    <div class="stat-card extended" style="background: rgba(0,0,0,0.2);">
+                        <h4>Current Verdict</h4>
+                        <p id="pm-verdict" class="big-number">-</p>
+                    </div>
+                    <div class="stat-card extended" style="background: rgba(0,0,0,0.2);">
+                        <h4>Machine Learning Confidence</h4>
+                        <p id="pm-ml-conf" class="big-number">-</p>
+                    </div>
+                    <div class="stat-card extended" style="background: rgba(0,0,0,0.2);">
+                        <h4>Detected Attack Type</h4>
+                        <p id="pm-attack" class="highlight-text">-</p>
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 32px;">
+                    <h3>Key Features Contributing to Decision</h3>
+                    <div id="pm-features" class="features-list" style="margin-top: 16px;"></div>
+                </div>
+
+                <div style="margin-bottom: 32px;">
+                    <h3>Social Engineering (NLP) Analysis</h3>
+                    <div id="pm-se" class="features-list" style="margin-top: 16px;">
+                        <div class="feature-item" style="display:block;">
+                            <strong style="color:var(--text-primary); display:block; margin-bottom:4px;">Keywords / Tactics Triggered:</strong>
+                            <span id="pm-se-tactics" style="color:var(--warning);">-</span>
+                        </div>
+                        <div class="feature-item" style="display:block; margin-top:12px;">
+                            <strong style="color:var(--text-primary); display:block; margin-bottom:4px;">Analysis Summary:</strong>
+                            <span id="pm-se-summary" style="color:var(--text-secondary); line-height:1.5;">-</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="border-top: 1px solid var(--panel-border); padding-top: 24px;">
+                    <h3>Classify This Scan</h3>
+                    <div class="feedback-actions" style="margin-top: 0; padding-top: 0; border: none;">
+                        <button class="btn btn-fp" onclick="submitFeedback('false_positive')">Report as False Positive</button>
+                        <button class="btn btn-fn" onclick="submitFeedback('false_negative')">Report Block / Missed Phishing</button>
+                        <button class="btn btn-safe" onclick="submitFeedback('safe')">Confirm Safe (Legitimate)</button>
+                        <button class="btn" style="border-color: #f39c12; color: #f39c12;" onclick="revokeFeedback()">Reverse Last Decision</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Whitelist Manager Section -->
+        <section id="whitelist" class="page-section">
+            <header>
+                <h1>Whitelist Manager</h1>
+                <p>Manage the websites you have explicitly overridden to "Legitimate". These websites bypass ML blocking.</p>
+            </header>
+
+            <div class="glass-panel table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Domain / URL</th>
+                            <th>Verdict Given</th>
+                            <th>Date Added</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="whitelist-table">
+                        <!-- Populated via JS -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <script src="/static/js/dashboard.js"></script>
+</body>
+</html>
